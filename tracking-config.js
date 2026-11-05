@@ -1,0 +1,2 @@
+// Generated public runtime configuration. Do not edit.
+window.VOLNAY_CONFIG = Object.freeze({"posthogToken":"phc_rm7QLrTMNeZgZTZZLPttBLzDy9sPhdwWozGRnibFXTB4","posthogHost":"https://us.i.posthog.com","metaPixelId":"4490650331206832","supabaseUrl":"https://jhqtirahcczngpioryhj.supabase.co","supabasePublishableKey":"sb_publishable_KMfeK0YUqMkqG2hqtNDWOA_2oxvg85Z","allowedHosts":["paddytbf.github.io"],"canonicalUrl":"https://paddytbf.github.io/volnayacademy/","schemaVersion":"1"});

@@ -1,0 +1,13 @@
+{
+  "name": "volnay-academy-landing",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "preview": "node scripts/preview.mjs",
+    "prepare:release": "npm test && node scripts/prepare-release.mjs"
+  },
+  "engines": { "node": ">=22" }
+}
+
