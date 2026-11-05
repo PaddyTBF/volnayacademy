@@ -16,7 +16,7 @@ function harness(responses = [{status:201}]) {
   const calls=[],events=[];let counter=0;
   const context={
     document:{getElementById:id=>nodes[id]},
-    window:{VOLNAY_CONFIG:{supabaseUrl:'https://example.supabase.co',supabasePublishableKey:'sb_publishable_TEST'},VolnayTracking:{track:n=>events.push(n),getConsent:()=>({analytics:true,advertising:false}),eventCode:'northeastern-2026-11-05'}},
+    window:{VOLNAY_CONFIG:{supabaseUrl:'https://example.supabase.co',supabasePublishableKey:'sb_publishable_TEST'},VolnayTracking:{track:n=>events.push(n),eventCode:'northeastern-2026-11-05'}},
     FormData:class{get(name){return data[name];}},crypto:{randomUUID:()=>`id-${++counter}`},
     AbortController,setTimeout,clearTimeout,
     fetch:async(url,options)=>{
@@ -39,7 +39,7 @@ test('confirmed database save maps every questionnaire field and mirrors Google 
   assert.equal(body.linkedin_profile,fields['entry.1380447704']);assert.equal(body.real_estate_goals,fields['entry.21922786']);
   assert.equal(body.contact_preference,'Email');assert.equal(body.skool_interest,'Not right now');
   assert.equal(body.community_must_have,'QA must have');assert.equal(body.ricky_feedback,'QA feedback');
-  assert.equal(body.event_code,'northeastern-2026-11-05');assert.equal(body.advertising_consent,false);
+  assert.equal(body.event_code,'northeastern-2026-11-05');assert.equal(body.advertising_consent,false);assert.equal(body.analytics_consent,false);
   assert.equal(h.nodes.thanks.hidden,false);assert.equal(h.nodes.f.hidden,true);
   assert.ok(h.events.includes('form submitted'));
   assert.ok(h.events.every(event=>typeof event==='string'&&!event.includes('@')));

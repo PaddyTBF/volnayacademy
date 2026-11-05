@@ -6,8 +6,8 @@ Static GitHub Pages landing page behind Paddy's Volnay Academy QR slide. No fram
 
 - **Durable, acknowledged record:** private Supabase `public.form_submissions`. The browser can insert bounded records but cannot read, update, or delete them. The UI shows success only after HTTP 201, or a confirmed duplicate retry of its unchanged UUID.
 - **Secondary copy:** the existing Volnay Academy Google Form receives the same questionnaire fields after the database save. Google returns an opaque response, so `google form request completed` does **not** mean a verified Google response record.
-- **Analytics:** PostHog project **712854**, in the separate **Volnay Academy** organization. Standard page views, autocapture outside the protected form, performance, exceptions, and masked session replay are enabled after analytics consent. Questionnaire answers are not analytics properties. Inputs, form text, network bodies/headers and console replay are protected.
-- **Retargeting:** Meta dataset/pixel **4490650331206832**, owned by Volnay Academy portfolio **1851560458243074**. PageView and FormStarted follow advertising consent; Lead fires only after an acknowledged database save. No campaigns or spend are enabled by this repository.
+- **Analytics:** PostHog project **712854**, in the separate **Volnay Academy** organization. Standard page views, autocapture outside the protected form, performance, exceptions, and masked session replay are enabled automatically on the production site (except when Do Not Track is enabled). Questionnaire answers are not analytics properties. Inputs, form text, network bodies/headers and console replay are protected.
+- **Retargeting:** Meta dataset/pixel **4490650331206832**, owned by Volnay Academy portfolio **1851560458243074**. PageView and FormStarted load automatically unless Global Privacy Control or Do Not Track is enabled; Lead fires only after an acknowledged database save. No campaigns or spend are enabled by this repository.
 - **Local previews:** neither analytics nor Meta loads on localhost. The configured database is still real, so do not submit extra records without approval.
 
 ## Run locally

@@ -17,6 +17,8 @@ Verified against the public Google Form on 2026-11-05. All questionnaire fields 
 
 Operational fields: `id` (retry UUID), `created_at` (database timestamp), `event_code` (fixed event marker or `unattributed`), `page_path` (fixed landing path), `analytics_consent`, `advertising_consent`, `consent_version`, and server-derived `is_test`.
 
+The historic `analytics_consent` and `advertising_consent` columns describe affirmative permission, not whether a vendor is enabled. Following the November 5 default-on change, new submissions set both to false because the site no longer collects consent. Existing records are unchanged; `consent_version` remains the legacy schema version, not evidence of permission.
+
 No raw URL, referrer, IP address, browser fingerprint, access token, or arbitrary UTM string is stored with questionnaire responses. Database infrastructure may separately maintain its normal access logs.
 
 No form answer is deliberately sent as a PostHog event property or Meta advanced-matching value. The entire form is excluded from autocapture and masked in replay; manual form events contain only fixed event names/source labels.

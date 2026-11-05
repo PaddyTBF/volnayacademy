@@ -19,38 +19,40 @@ function harness({saved=null,gpc=false,dnt=false,host='paddytbf.github.io',query
   vm.runInNewContext(source,context);
   return {context,nodes,scripts,storage,urls,node,click:id=>node(id).handlers.click()};
 }
-test('no optional vendor loads or events before consent',()=>{
-  const h=harness();h.context.window.VolnayTracking.track('form started');assert.equal(h.scripts.length,0);assert.equal(h.node('tracking-consent').hidden,false);
+test('production starts both providers automatically without permission controls',()=>{
+  const h=harness();assert.equal(h.scripts.length,2);assert.equal(h.nodes.size,0);
+  assert.equal(h.context.window.VolnayTracking.getTrackingState().analytics,true);
+  assert.equal(h.context.window.VolnayTracking.getTrackingState().advertising,true);
 });
-test('accept enables standard analytics, masked replay and separate Meta pixel',()=>{
-  const h=harness();h.click('consent-accept');assert.equal(h.scripts.length,2);
-  const config=h.context.window.posthog._i[0][1];
+test('automatic analytics retains standard capture and masked replay',()=>{
+  const h=harness();const config=h.context.window.posthog._i[0][1];
   assert.equal(config.autocapture,true);assert.equal(config.capture_pageview,true);assert.equal(config.capture_pageleave,true);
+  assert.equal(config.opt_out_capturing_by_default,false);
   assert.equal(config.disable_session_recording,false);assert.equal(config.session_recording.maskAllInputs,true);
   assert.equal(config.session_recording.recordBody,false);assert.equal(config.session_recording.recordHeaders,false);
-  assert.equal(config.session_recording.maskTextSelector,'[data-private]');
+  assert.equal(config.session_recording.maskTextSelector,'[data-private]');assert.equal(config.enable_recording_console_log,false);
 });
-test('analytics-only choice does not load Meta',()=>{
-  const h=harness();h.node('consent-analytics').checked=true;h.click('consent-save');
-  assert.equal(h.scripts.length,1);assert.match(h.scripts[0].src,/posthog/);
+test('obsolete permission UI preferences no longer gate provider startup',()=>{
+  const h=harness({saved:{analytics:false,advertising:false}});assert.equal(h.scripts.length,2);
 });
 test('Meta Lead fires only for a database-confirmed form submitted event',()=>{
-  const h=harness();h.click('consent-accept');h.scripts.find(s=>s.src.includes('facebook')).onload();
+  const h=harness();h.scripts.find(s=>s.src.includes('facebook')).onload();
   const fbq=h.context.window.fbq;fbq.queue.length=0;
   h.context.window.VolnayTracking.track('form submission attempted');assert.equal(fbq.queue.length,0);
   h.context.window.VolnayTracking.track('form submitted');assert.equal(fbq.queue.length,1);assert.equal(fbq.queue[0][1],'Lead');
 });
-test('withdrawal before Meta loads sends no queued pageview or lead',()=>{
-  const h=harness();h.click('consent-accept');h.click('consent-reject');
-  h.scripts.find(s=>s.src.includes('facebook')).onload();
-  assert.ok(h.context.window.fbq.queue.every(args=>args[0]==='consent'&&args[1]==='revoke'));
+test('GPC blocks Meta; DNT blocks both without any UI action',()=>{
+  const g=harness({gpc:true});assert.equal(g.scripts.length,1);assert.match(g.scripts[0].src,/posthog/);assert.equal(g.context.window.VolnayTracking.getTrackingState().advertising,false);
+  const d=harness({dnt:true});assert.equal(d.scripts.length,0);
 });
-test('GPC blocks Meta but permits chosen analytics; DNT blocks both',()=>{
-  const g=harness({gpc:true});g.click('consent-accept');assert.equal(g.scripts.length,1);assert.equal(g.context.window.VolnayTracking.getConsent().advertising,false);
-  const d=harness({dnt:true});d.click('consent-accept');assert.equal(d.scripts.length,0);
+test('manual form events queue until PostHog loads and flush once',()=>{
+  const h=harness();h.context.window.VolnayTracking.track('form started');
+  const client={events:[],capture(n){this.events.push(n);},opt_in_capturing(){},register(){}};
+  h.context.window.posthog._i[0][1].loaded(client);h.context.window.posthog=client;
+  assert.deepEqual(client.events,['landing viewed','form started']);
 });
 test('local preview never sends analytics or Meta events',()=>{
-  const h=harness({host:'127.0.0.1'});h.click('consent-accept');assert.equal(h.scripts.length,0);
+  const h=harness({host:'127.0.0.1'});assert.equal(h.scripts.length,0);
 });
 test('only exact event marker survives URL sanitization; unknown values never become attribution',()=>{
   const h=harness({query:'?event=northeastern-2026-11-05&email=someone%40example.com',hash:'#private'});
@@ -58,12 +60,19 @@ test('only exact event marker survives URL sanitization; unknown values never be
   const unknown=harness({query:'?event=someone%40example.com'});assert.equal(unknown.context.window.VolnayTracking.eventCode,'unattributed');assert.equal(unknown.urls[0],'/volnayacademy/');
 });
 test('PostHog URL properties strip arbitrary query strings and form fields',()=>{
-  const h=harness();h.click('consent-accept');const before=h.context.window.posthog._i[0][1].before_send;
+  const h=harness();const before=h.context.window.posthog._i[0][1].before_send;
   const event=before({event:'form submitted',properties:{$current_url:'https://paddytbf.github.io/volnayacademy/?email=PRIVATE#PRIVATE',$referrer:'https://example.com/?phone=PRIVATE',email:'PRIVATE',$set:{email:'PRIVATE'}}});
   assert.ok(!JSON.stringify(event).includes('PRIVATE'));
 });
 test('arbitrary custom event names and questionnaire values are never emitted',()=>{
-  const h=harness();h.click('consent-accept');const client={events:[],capture(n){this.events.push(n);},opt_in_capturing(){},register(){}};
+  const h=harness();const client={events:[],capture(n){this.events.push(n);},opt_in_capturing(){},register(){}};
   h.context.window.posthog._i[0][1].loaded(client);h.context.window.posthog=client;
   h.context.window.VolnayTracking.track('private answer@example.com');assert.deepEqual(client.events,['landing viewed']);
+});
+
+test('published markup has no permission prompt and preserves form privacy boundaries',async()=>{
+  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
+  assert.doesNotMatch(html,/tracking-consent|consent-accept|privacy-settings|Tracking settings/);
+  assert.match(html,/<form[^>]+class="ph-no-capture"[^>]+data-private/);
+  assert.match(html,/href="privacy.html"/);
 });

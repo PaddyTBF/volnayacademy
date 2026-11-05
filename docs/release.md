@@ -11,8 +11,8 @@
 ## Verify live
 
 - Confirm `tracking-config.js`, `tracking.js`, `form.js`, images and privacy page all return successfully under `/volnayacademy/`.
-- No optional provider requests before consent. Reject leaves form submission usable; analytics-only must not load Meta.
-- With consent, verify PostHog page views, form-start/attempt/save events and a masked replay. Verify Meta PageView and a test Lead only after a database-acknowledged save. Do not include an actual prospect's data in QA.
+- No permission prompt or tracking-settings button. Both providers load automatically on production; GPC blocks Meta and DNT blocks both. Form submission remains usable.
+- Without clicking any permission controls, verify PostHog page views, form-start/attempt/save events and a masked replay. Verify Meta PageView and a test Lead only after a database-acknowledged save. Do not include an actual prospect's data in QA.
 - Obtain approval for any additional live QA record. Locate its UUID in Supabase and check all ten questionnaire columns and `is_test = true`. Public reads must remain denied.
 - Google response row: an authorized Google Form editor must locate the test marker in Responses or its linked Sheet. An opaque fetch response is not evidence of that row.
 - Check the QR destination itself. Event-specific cohorts require the exact tagged URL; an untagged static QR cannot be retroactively distinguished from other root-page visits.

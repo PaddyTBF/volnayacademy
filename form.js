@@ -37,12 +37,12 @@
     const fingerprint = JSON.stringify(fields);
     // A failed retry reuses the same ID and payload, so timeouts cannot duplicate a record.
     if (!pending || pending.fingerprint !== fingerprint) {
-      const consent = window.VolnayTracking?.getConsent() || { analytics:false, advertising:false };
       pending = { fingerprint, payload: {
         id: crypto.randomUUID(), ...fields,
         event_code: window.VolnayTracking?.eventCode || 'unattributed',
         page_path: '/volnayacademy/',
-        analytics_consent: !!consent.analytics, advertising_consent: !!consent.advertising,
+        // Historic consent fields remain false: default-on tracking is not affirmative consent.
+        analytics_consent: false, advertising_consent: false,
         consent_version: '1',
       }};
     }

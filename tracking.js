@@ -1,7 +1,6 @@
 (function () {
   'use strict';
   const config = window.VOLNAY_CONFIG || {};
-  const CONSENT_KEY = 'volnay_tracking_consent_v1';
   const EVENTS = new Set(['landing viewed','form started','form submission attempted','form submitted','form submission failed','google form request completed','google form request failed']);
   const validEventCode = new URLSearchParams(location.search).get('event') === 'northeastern-2026-11-05' ? 'northeastern-2026-11-05' : null;
   // Store only a fixed event code, never arbitrary URLs, UTMs, email addresses or answer text.
@@ -15,14 +14,10 @@
   if (production && (location.search || location.hash)) {
     history.replaceState(null, '', location.pathname + (validEventCode ? '?event=' + validEventCode : ''));
   }
-  const panel = document.getElementById('tracking-consent');
-  const choices = document.getElementById('tracking-choices');
-  const analyticsInput = document.getElementById('consent-analytics');
-  const adsInput = document.getElementById('consent-advertising');
+  // Default-on tracking, subject to browser privacy signals. No consent is collected.
   const gpc = navigator.globalPrivacyControl === true;
   const dnt = navigator.doNotTrack === '1';
-  let consent = {analytics:false, advertising:false};
-  let chosen = false;
+  const enabled = Object.freeze({analytics:!dnt, advertising:!gpc&&!dnt});
   let phReady = false;
   let phLoading = false;
   let metaReady = false;
@@ -30,13 +25,6 @@
   let pageTracked = false;
   let metaPageTracked = false;
   const queue = [];
-  try {
-    const saved = JSON.parse(localStorage.getItem(CONSENT_KEY) || 'null');
-    if (saved?.version === 1 && Date.now() - saved.at < 180 * 86400000) {
-      consent = {analytics:saved.analytics === true && !dnt, advertising:saved.advertising === true && !gpc && !dnt};
-      chosen = true;
-    }
-  } catch {}
 
   function safeProperties(event) {
     if (!event || !event.properties) return event;
@@ -57,9 +45,9 @@
   }
 
   function loadPosthog() {
-    if (!production || !consent.analytics || phReady || phLoading || !config.posthogToken || !config.posthogHost) return;
+    if (!production || !enabled.analytics || phReady || phLoading || !config.posthogToken || !config.posthogHost) return;
     phLoading = true;
-    // PostHog's canonical HTML loader. Loaded only after analytics consent.
+    // PostHog's canonical HTML loader. Loads automatically on the production host.
     (function (t,e) {
       if (e.__SV) return;
       window.posthog=e;e._i=[];
@@ -87,11 +75,11 @@
       // Never record form values, questionnaire text, response payloads, or console output.
       session_recording:{maskAllInputs:true,maskTextSelector:'[data-private]',recordHeaders:false,recordBody:false},
       enable_recording_console_log:false,
-      opt_out_capturing_by_default:true, cross_subdomain_cookie:false,
+      opt_out_capturing_by_default:false, cross_subdomain_cookie:false,
       before_send:safeProperties,
       loaded:function(client) {
         phLoading=false;phReady=true;
-        if (!consent.analytics) { client.opt_out_capturing({clear_persistence:true});queue.length=0;return; }
+        if (!enabled.analytics) { client.opt_out_capturing({clear_persistence:true});queue.length=0;return; }
         client.opt_in_capturing({captureEventName:false});
         client.register({site:'volnay-academy',event_code:eventCode,schema_version:'1'});
         if (!pageTracked) {pageTracked=true;client.capture('landing viewed');}
@@ -101,7 +89,7 @@
   }
 
   function loadMeta() {
-    if (!production || !consent.advertising || metaReady || metaLoading || !config.metaPixelId) return;
+    if (!production || !enabled.advertising || metaReady || metaLoading || !config.metaPixelId) return;
     metaLoading=true;
     if (!window.fbq) {
       const fbq=function(){fbq.callMethod ? fbq.callMethod.apply(fbq,arguments) : fbq.queue.push(arguments);};
@@ -110,7 +98,7 @@
     const script=document.createElement('script');script.async=true;script.src='https://connect.facebook.net/en_US/fbevents.js';
     script.onload=function(){
       metaLoading=false;
-      if (!consent.advertising) return;
+      if (!enabled.advertising) return;
       metaReady=true;
       window.fbq('consent','grant');
       window.fbq('set','autoConfig',false,config.metaPixelId);
@@ -121,37 +109,16 @@
     document.head.appendChild(script);
   }
 
-  function applyConsent(next) {
-    consent={analytics:next.analytics===true&&!dnt,advertising:next.advertising===true&&!gpc&&!dnt};
-    chosen=true;
-    try{localStorage.setItem(CONSENT_KEY,JSON.stringify({...consent,version:1,at:Date.now()}));}catch{}
-    if(!consent.analytics){queue.length=0;if(phReady){window.posthog.stopSessionRecording();window.posthog.opt_out_capturing({clear_persistence:true});}}
-    else if(phReady){window.posthog.opt_in_capturing({captureEventName:false});window.posthog.startSessionRecording();}
-    else loadPosthog();
-    if(!consent.advertising && window.fbq) window.fbq('consent','revoke');
-    else if(consent.advertising && metaReady) window.fbq('consent','grant');
-    else loadMeta();
-    panel.hidden=true;
-    document.getElementById('privacy-status').textContent='Tracking preferences saved.';
-  }
   function track(name) {
     if (!EVENTS.has(name)) return;
-    if(consent.analytics && production){
+    if(enabled.analytics && production){
       if(phReady) window.posthog.capture(name,{event_code:eventCode},{transport:'sendBeacon',send_instantly:true});
       else if(queue.length<20) queue.push(name);
     }
-    if(consent.advertising && metaReady && name==='form submitted') window.fbq('track','Lead',{event_code:eventCode});
-    if(consent.advertising && metaReady && name==='form started') window.fbq('trackCustom','FormStarted',{event_code:eventCode});
+    if(enabled.advertising && metaReady && name==='form submitted') window.fbq('track','Lead',{event_code:eventCode});
+    if(enabled.advertising && metaReady && name==='form started') window.fbq('trackCustom','FormStarted',{event_code:eventCode});
   }
-  window.VolnayTracking=Object.freeze({track,getConsent:()=>({...consent}),eventCode});
-  document.getElementById('consent-reject').addEventListener('click',()=>applyConsent({analytics:false,advertising:false}));
-  document.getElementById('consent-accept').addEventListener('click',()=>applyConsent({analytics:true,advertising:true}));
-  document.getElementById('consent-save').addEventListener('click',()=>applyConsent({analytics:analyticsInput.checked,advertising:adsInput.checked}));
-  document.getElementById('consent-customize').addEventListener('click',()=>{choices.hidden=false;analyticsInput.checked=consent.analytics;adsInput.checked=consent.advertising;analyticsInput.focus();});
-  document.getElementById('privacy-settings').addEventListener('click',()=>{panel.hidden=false;choices.hidden=false;analyticsInput.checked=consent.analytics;adsInput.checked=consent.advertising;document.getElementById('consent-title').focus();});
-  if(gpc||dnt){adsInput.disabled=true;document.getElementById('privacy-signal').hidden=false;}
-  if(dnt) analyticsInput.disabled=true;
-  panel.hidden=chosen;
-  if(consent.analytics) loadPosthog();
-  if(consent.advertising) loadMeta();
+  window.VolnayTracking=Object.freeze({track,getTrackingState:()=>({...enabled}),eventCode});
+  loadPosthog();
+  loadMeta();
 })();
