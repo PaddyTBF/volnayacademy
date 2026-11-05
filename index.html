@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Join Volnay Academy</title>
+<meta name="description" content="Volnay Academy: master classes from the best in real estate, and a community to build with.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+<script>
+  // DRAFT. Paste the Meta Pixel ID between the quotes to switch tracking on. Until then no pixel loads.
+  var PIXEL_ID = '';
+  if (PIXEL_ID) {
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', PIXEL_ID); fbq('track', 'PageView');
+  }
+</script>
+<style>
+  :root{--bg:#0A0C0B;--panel:#111513;--edge:#232A26;--green:#78D000;--blue:#1E8CFF;--white:#fff;--body:#C8CFCA;--muted:#8C958F}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--body);font-family:Inter,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:24px 16px 48px}
+  header img{height:64px;display:block}
+  .hero{margin-top:20px;border-radius:12px;overflow:hidden;position:relative;aspect-ratio:16/9;background:#000}
+  .hero img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;display:block}
+  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,12,11,0) 35%,rgba(10,12,11,.9) 100%)}
+  .hero h1{position:absolute;left:20px;right:20px;bottom:16px;margin:0;z-index:1;font-family:Montserrat,Arial,sans-serif;font-weight:800;font-size:clamp(22px,5vw,34px);line-height:1.08;color:#fff}
+  .hero h1 span{color:var(--green)}
+  .lead{font-size:16px;line-height:1.55;margin:20px 0 6px;color:var(--body)}
+  .lead b{color:#fff}
+  form{margin-top:18px;background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:20px}
+  .f{margin-bottom:16px}
+  label,.lg{display:block;font-family:Montserrat,Arial,sans-serif;font-weight:700;font-size:14px;color:#fff;margin-bottom:6px}
+  .opt{font-family:Inter,Arial,sans-serif;font-weight:400;color:var(--muted);font-size:13px}
+  input[type=text],input[type=tel],input[type=email],textarea{width:100%;padding:12px 14px;border-radius:8px;border:1px solid var(--edge);background:#0C0F0D;color:#fff;font:16px Inter,Arial,sans-serif}
+  input:focus,textarea:focus{outline:2px solid var(--blue);outline-offset:1px}
+  textarea{min-height:84px;resize:vertical}
+  .choices{display:flex;flex-wrap:wrap;gap:8px}
+  .choices label{font-family:Inter,Arial,sans-serif;font-weight:500;font-size:14px;margin:0;padding:9px 12px;border:1px solid var(--edge);border-radius:999px;cursor:pointer;color:var(--body)}
+  .choices input{position:absolute;opacity:0;pointer-events:none}
+  .choices input:checked+span{color:#fff}
+  .choices label:has(input:checked){border-color:var(--green);background:rgba(120,208,0,.12)}
+  button{width:100%;padding:14px;border:0;border-radius:10px;background:var(--green);color:#0A0C0B;font-family:Montserrat,Arial,sans-serif;font-weight:800;font-size:16px;cursor:pointer}
+  button:disabled{opacity:.6}
+  .note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.5}
+  .err{color:#ff8a7a;font-size:14px;margin-top:10px;display:none}
+  .thanks{display:none;margin-top:18px;background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:24px}
+  .thanks h2{font-family:Montserrat,Arial,sans-serif;font-weight:800;color:#fff;margin:0 0 8px;font-size:22px}
+  .follow{margin-top:22px;font-family:Montserrat,Arial,sans-serif;font-weight:800;font-size:18px;color:#fff}
+  .follow a{color:var(--green);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><img src="logo.svg" alt="Volnay Academy"></header>
+  <div class="hero"><img src="ricky.jpg" alt="Ricky Volnay in the interview chair"><h1>The best in the business,<br><span>on the record</span></h1></div>
+  <p class="lead">Most of Volnay Academy lives on social media, because that is where the community is. <b>For the insider knowledge, the details, the access and the community, you gotta join and you gotta participate.</b> Leave your info and we will reach out.</p>
+
+  <form id="f" novalidate>
+    <div class="f"><label for="name">Name</label><input id="name" name="entry.174957854" type="text" autocomplete="name" required></div>
+    <div class="f"><label for="phone">Phone number</label><input id="phone" name="entry.1983000286" type="tel" autocomplete="tel" required></div>
+    <div class="f"><label for="email">Email <span class="opt">(optional)</span></label><input id="email" name="entry.491185921" type="email" autocomplete="email"></div>
+    <div class="f"><label for="ig">Instagram handle <span class="opt">(optional)</span></label><input id="ig" name="entry.709092237" type="text" placeholder="@yourname"></div>
+    <div class="f"><label for="li">LinkedIn <span class="opt">(optional)</span></label><input id="li" name="entry.1380447704" type="text" placeholder="Profile link or name"></div>
+    <div class="f"><label for="goals">What are your goals in real estate?</label><textarea id="goals" name="entry.21922786"></textarea></div>
+    <div class="f"><span class="lg">Best way to reach you</span><div class="choices">
+      <label><input type="radio" name="entry.686903170" value="Call"><span>Call</span></label>
+      <label><input type="radio" name="entry.686903170" value="Text"><span>Text</span></label>
+      <label><input type="radio" name="entry.686903170" value="Email"><span>Email</span></label>
+      <label><input type="radio" name="entry.686903170" value="Instagram DM"><span>Instagram DM</span></label>
+      <label><input type="radio" name="entry.686903170" value="LinkedIn message"><span>LinkedIn message</span></label></div></div>
+    <div class="f"><span class="lg">Interested in joining the Volnay Academy community on Skool?</span><div class="choices">
+      <label><input type="radio" name="entry.2120816330" value="Yes"><span>Yes</span></label>
+      <label><input type="radio" name="entry.2120816330" value="Maybe, tell me more"><span>Maybe, tell me more</span></label>
+      <label><input type="radio" name="entry.2120816330" value="Not right now"><span>Not right now</span></label></div></div>
+    <div class="f"><label for="must">What would make it something you had to be a part of?</label><textarea id="must" name="entry.922802930"></textarea></div>
+    <button id="go" type="submit">Join the list</button>
+    <div class="err" id="err">Please add your name and phone number.</div>
+    <p class="note" id="note">We use this to keep in touch with you about Volnay Academy.</p>
+  </form>
+
+  <div class="thanks" id="thanks"><h2>You're on the list.</h2><p>Thanks for being here. We will be in touch the way you asked.</p></div>
+  <div class="follow">Follow us <a href="https://www.instagram.com/volnayacademy/">@volnayacademy</a></div>
+</div>
+<script>
+  var FORM = 'https://docs.google.com/forms/d/e/1FAIpQLSehpOy8crRqbjNS5iCjGY2YenrhVkN9d5gKrTYvzWoIAcX9nQ/formResponse';
+  if (PIXEL_ID) document.getElementById('note').textContent += ' This page uses a Meta pixel so we can show you Volnay Academy content on Instagram and Facebook.';
+  document.getElementById('f').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var f = e.target, err = document.getElementById('err');
+    var nm = document.getElementById('name').value.trim(), ph = document.getElementById('phone').value.trim();
+    if (!nm || !ph) { err.style.display = 'block'; return; }
+    err.style.display = 'none';
+    var btn = document.getElementById('go'); btn.disabled = true; btn.textContent = 'Sending...';
+    fetch(FORM, { method: 'POST', mode: 'no-cors', body: new FormData(f) }).then(function () {
+      if (window.fbq) fbq('track', 'Lead');
+      f.style.display = 'none'; document.getElementById('thanks').style.display = 'block';
+    }).catch(function () { btn.disabled = false; btn.textContent = 'Join the list'; err.textContent = 'That did not go through. Please try again.'; err.style.display = 'block'; });
+  });
+</script>
+</body>
+</html>
