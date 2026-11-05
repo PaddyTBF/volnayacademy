@@ -52,16 +52,6 @@
   .choices label:has(input:focus-visible){outline:2px solid var(--blue);outline-offset:3px}
   .honeypot{position:absolute;left:-10000px;max-width:1px;overflow:hidden}
   .privacy-footer{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:24px;font-size:13px}
-  .text-button{width:auto;min-height:44px;padding:8px 0;background:none;color:var(--body);font:inherit;text-decoration:underline;text-underline-offset:3px}
-  .consent{margin-top:24px;padding:20px;border:1px solid var(--edge);border-radius:12px;background:var(--panel)}
-  .consent h2{font:700 17px Montserrat,Arial,sans-serif;color:var(--white);margin:0 0 8px}
-  .consent p{font-size:14px;line-height:1.5;margin:8px 0 16px}
-  .consent-actions{display:flex;flex-wrap:wrap;gap:8px}
-  .consent button{flex:1;min-width:125px;min-height:44px;width:auto;font:600 14px Inter,Arial,sans-serif}
-  .consent .secondary{background:transparent;color:var(--body);border:1px solid var(--muted)}
-  .consent-option{display:flex;align-items:flex-start;gap:10px;font:400 14px/1.5 Inter,Arial,sans-serif;margin:16px 0;color:var(--body)}
-  .consent-option input{margin-top:4px;min-width:20px;min-height:20px;accent-color:var(--green)}
-  #privacy-status{font-size:12px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -70,22 +60,7 @@
   <div class="hero"><img src="ricky.jpg" alt="Ricky Volnay in the interview chair"><h1>The best in the business,<br><span>on the record</span></h1></div>
   <p class="lead">Most of Volnay Academy lives on social media, because that is where the community is. <b>For the insider knowledge, the details, the access and the community, you gotta join and you gotta participate.</b> Leave your info and we will reach out.</p>
 
-  <section class="consent ph-no-capture" id="tracking-consent" aria-labelledby="consent-title" hidden>
-    <h2 id="consent-title" tabindex="-1">Your tracking choices</h2>
-    <p>Optional PostHog analytics and masked session replay help us improve this page. Meta tracking helps us show Volnay Academy content on Facebook and Instagram. You can join the list without either.</p>
-    <div class="consent-actions">
-      <button type="button" id="consent-reject" class="secondary">Reject optional</button>
-      <button type="button" id="consent-customize" class="secondary">Choose settings</button>
-      <button type="button" id="consent-accept">Allow both</button>
-    </div>
-    <div id="tracking-choices" hidden>
-      <label class="consent-option"><input type="checkbox" id="consent-analytics">Analytics and masked session replay (PostHog)</label>
-      <label class="consent-option"><input type="checkbox" id="consent-advertising">Advertising and retargeting (Meta)</label>
-      <p id="privacy-signal" hidden>Your browser's privacy signal limits optional tracking.</p>
-      <button type="button" id="consent-save" class="secondary">Save my choices</button>
-    </div>
-  </section>
-  <noscript><p class="note">JavaScript is off. Submitting this form will open Google Forms for confirmation; the private database backup and optional tracking need JavaScript.</p></noscript>
+  <noscript><p class="note">JavaScript is off. Submitting this form will open Google Forms for confirmation; the private database backup and tracking need JavaScript.</p></noscript>
   <form id="f" method="post" action="https://docs.google.com/forms/d/e/1FAIpQLSehpOy8crRqbjNS5iCjGY2YenrhVkN9d5gKrTYvzWoIAcX9nQ/formResponse" class="ph-no-capture" data-private novalidate>
     <div class="f"><label for="name">Name</label><input id="name" name="entry.174957854" type="text" autocomplete="name" maxlength="120" required></div>
     <div class="f"><label for="phone">Phone number</label><input id="phone" name="entry.1983000286" type="tel" autocomplete="tel" maxlength="40" required></div>
@@ -108,13 +83,13 @@
     <div class="honeypot" aria-hidden="true"><label for="website">Leave this field empty</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
     <button id="go" type="submit">Join the list</button>
     <div class="err" id="err" role="alert" tabindex="-1" hidden>Please add your name and phone number.</div>
-    <p class="note" id="note">We use your answers to follow up about Volnay Academy. Responses are saved privately, with a copy sent to Google Forms. <a href="privacy.html">Privacy details</a>. Tracking is optional.</p>
+    <p class="note" id="note">We use your answers to follow up about Volnay Academy. Responses are saved privately, with a copy sent to Google Forms. <a href="privacy.html">Privacy details</a>. Analytics, masked replay and Meta tracking run automatically, subject to browser privacy controls.</p>
     <p class="note">Having trouble? <a href="https://docs.google.com/forms/d/e/1FAIpQLSehpOy8crRqbjNS5iCjGY2YenrhVkN9d5gKrTYvzWoIAcX9nQ/viewform" rel="noreferrer">Use the Google Form directly</a>.</p>
   </form>
 
   <div class="thanks" id="thanks" role="status" tabindex="-1" hidden><h2>You're on the list.</h2><p>Your answers have been saved. We will be in touch the way you asked.</p></div>
   <div class="follow">Follow us <a href="https://www.instagram.com/volnayacademy/">@volnayacademy</a></div>
-  <footer class="privacy-footer"><a href="privacy.html">Privacy</a><button id="privacy-settings" type="button" class="text-button ph-no-capture">Tracking settings</button><span id="privacy-status" role="status"></span></footer>
+  <footer class="privacy-footer"><a href="privacy.html">Privacy</a></footer>
 </div>
 
 </body>
